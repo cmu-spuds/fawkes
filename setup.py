@@ -77,8 +77,7 @@ setup_requires = []
 install_requires = [
     'tensorflow==2.13.0',
     'mtcnn',
-    'pillow==10.0.0',
-    'typing_extensions==4.7.1'
+    'pillow==10.0.0'
 ]
 
 setup(
