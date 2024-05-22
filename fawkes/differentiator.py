@@ -3,14 +3,13 @@
 # @Date    : 2020-10-21
 # @Author  : Emily Wenger (ewenger@uchicago.edu)
 
-import datetime
 import time
 
 import numpy as np
 import tensorflow as tf
 from tensorflow.keras.optimizers.legacy import Adadelta
 from fawkes.utils import preprocess, reverse_preprocess
-from keras.utils import Progbar
+from tqdm import tqdm
 
 
 class FawkesMaskGeneration:
@@ -164,8 +163,8 @@ class FawkesMaskGeneration:
         """ Main function that runs cloak generation. """
         start_time = time.time()
         adv_imgs = []
-        for idx in range(0, len(source_imgs), self.batch_size):
-            print('processing image %d at %s' % (idx + 1, datetime.datetime.now()))
+        for idx in tqdm(range(0, len(source_imgs), self.batch_size)):
+            # print('processing image %d at %s' % (idx + 1, datetime.datetime.now()))
             adv_img = self.compute_batch(source_imgs[idx:idx + self.batch_size],
                                          target_imgs[idx:idx + self.batch_size] if target_imgs is not None else None)
             adv_imgs.extend(adv_img)
@@ -205,8 +204,8 @@ class FawkesMaskGeneration:
 
         # get the modifier
         if self.verbose == 0:
-            progressbar = Progbar(
-                self.MAX_ITERATIONS, width=30, verbose=1
+            progressbar = tqdm(
+                total=self.MAX_ITERATIONS, unit="step"
             )
         # watch relevant variables.
         simg_tanh = tf.Variable(simg_tanh, dtype=np.float32)
@@ -286,10 +285,12 @@ class FawkesMaskGeneration:
                                                                                           np.mean(internal_dist)))
 
             if self.verbose == 0:
-                progressbar.update(self.it)
+                progressbar.update(1)
         if self.verbose == 1:
             print("Final diff: {:.4f}".format(np.mean(best_bottlesim)))
         print("\n")
+
+        progressbar.close()
 
         if self.save_last_on_failed:
             for e, diff in enumerate(best_bottlesim):
