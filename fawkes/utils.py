@@ -16,7 +16,6 @@ import tarfile
 import zipfile
 
 import numpy as np
-import pkg_resources
 import six
 from keras import utils, models, backend, ops
 from six.moves.urllib.error import HTTPError, URLError
@@ -376,16 +375,11 @@ def load_extractor(name):
         "extractor_0": "94854151fd9077997d69ceda107f9c6b",
     }
     assert name in ["extractor_2", "extractor_0"]
-    model_file = pkg_resources.resource_filename("fawkes", "model/{}.h5".format(name))
-    cur_hash = hash_map[name]
-    model_dir = pkg_resources.resource_filename("fawkes", "model/")
-    os.makedirs(model_dir, exist_ok=True)
-    get_file(
-        "{}.h5".format(name),
-        "http://mirror.cs.uchicago.edu/fawkes/files/{}.h5".format(name),
-        cache_dir=model_dir,
-        cache_subdir="",
-        md5_hash=cur_hash,
+    model_file = utils.get_file(
+        fname="{}.h5".format(name),
+        origin="http://mirror.cs.uchicago.edu/fawkes/files/{}.h5".format(name),
+        md5_hash=hash_map[name],
+        cache_subdir="model",
     )
 
     model = models.load_model(model_file)
