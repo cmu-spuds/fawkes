@@ -75,7 +75,7 @@ class DeployCommand(Command):
 
 setup_requires = []
 
-install_requires = ["tensorflow>=2.16.0", "mtcnn", "pillow==10.0.0" "keras>=3"]
+install_requires = ["tensorflow>=2.16.0", "mtcnn", "pillow>=10.0.0", "keras>=3"]
 
 setup(
     name="fawkes",
