@@ -8,11 +8,9 @@ import argparse
 import glob
 import os
 import sys
-
 import numpy as np
 from fawkes.differentiator import FawkesMaskGeneration
 from fawkes.utils import (
-    init_gpu,
     dump_image,
     reverse_process_cloaked,
     Faces,
@@ -33,17 +31,14 @@ PREPROCESS = "raw"
 
 
 class Fawkes(object):
-    def __init__(self, feature_extractor, gpu, batch_size, mode="low"):
+    def __init__(self, feature_extractor, batch_size, mode="low"):
         self.feature_extractor = feature_extractor
-        self.gpu = gpu
         self.batch_size = batch_size
         self.mode = mode
         th, max_step, lr, extractors = self.mode2param(self.mode)
         self.th = th
         self.lr = lr
         self.max_step = max_step
-        if gpu is not None:
-            init_gpu(gpu)
 
         self.aligner = aligner()
 
@@ -183,13 +178,6 @@ def main(*argv):
         default="imgs/",
     )
     parser.add_argument(
-        "--gpu",
-        "-g",
-        type=str,
-        help="the GPU id when using GPU for optimization",
-        default="0",
-    )
-    parser.add_argument(
         "--mode",
         "-m",
         type=str,
@@ -261,9 +249,7 @@ def main(*argv):
         path for path in image_paths if "_cloaked" not in path.split("/")[-1]
     ]
 
-    protector = Fawkes(
-        args.feature_extractor, args.gpu, args.batch_size, mode=args.mode
-    )
+    protector = Fawkes(args.feature_extractor, args.batch_size, mode=args.mode)
 
     protector.run_protection(
         image_paths,
