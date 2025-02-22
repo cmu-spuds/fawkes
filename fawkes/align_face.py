@@ -10,7 +10,7 @@ def to_rgb(img):
 
 
 def aligner():
-    return MTCNN(min_face_size=30)
+    return MTCNN()
 
 
 def align(orig_img, aligner):
