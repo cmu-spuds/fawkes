@@ -76,7 +76,7 @@ class DeployCommand(Command):
 setup_requires = []
 
 install_requires = [
-    "tensorflow>=2.16.0",
+    "tensorflow<=2.17",
     "mtcnn",
     "pillow>=10.0.0",
     "keras>=3",
